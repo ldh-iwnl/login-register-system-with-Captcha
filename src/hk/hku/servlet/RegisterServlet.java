@@ -1,5 +1,6 @@
 package hk.hku.servlet;
 
+import hk.hku.Utils.RandomValidateCode;
 import hk.hku.entity.HkuUserEntity;
 import hk.hku.service.HkuUserService;
 import jakarta.servlet.ServletException;
@@ -7,6 +8,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
@@ -35,6 +37,18 @@ public class RegisterServlet extends HttpServlet {
             req.getRequestDispatcher("register.jsp").forward(req, resp);
             return; //stop the execution
         }
+
+        //check captcha
+        //compare the captcha from session and the captcha from user input
+        String code = req.getParameter("code");
+        HttpSession session = req.getSession();
+        String randomValidateCode = (String) session.getAttribute(RandomValidateCode.MAYIKT_RANDOMVALIDATECODE);
+        if(!randomValidateCode.equalsIgnoreCase(code)){
+            req.setAttribute("errMsg", "Captcha is wrong");
+            req.getRequestDispatcher("register.jsp").forward(req, resp);
+            return; //stop the execution
+        }
+
         //before register, check userName exists or not
         HkuUserEntity byUsername = hkuUserService.findByUsername(userName);
         if(byUsername != null){
@@ -42,6 +56,9 @@ public class RegisterServlet extends HttpServlet {
             req.getRequestDispatcher("register.jsp").forward(req, resp);
             return; //stop the execution
         }
+
+
+
         //register the user
         int register = hkuUserService.register(userName, userPwd);
         if (register <= 0) {
