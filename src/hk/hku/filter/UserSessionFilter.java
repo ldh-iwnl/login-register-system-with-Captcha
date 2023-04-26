@@ -12,7 +12,7 @@ import java.io.IOException;
 @WebFilter("/*")
 public class UserSessionFilter implements Filter {
     // make an array that need to be excluded
-    private String[] excludeUrl = new String[] {"/login", "/register", "/VerifycodeServlet"};
+    private String[] excludeUrl = new String[] {"/login", "/register", "/VerifycodeServlet", "/exUserNameServlet", "/registerAjaxServlet", "/ajaxRegister.jsp"};
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         // get user conversation from session and check if it is login before

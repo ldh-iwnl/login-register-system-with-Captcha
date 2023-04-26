@@ -11,11 +11,11 @@
 <head>
     <title>resgiter 页面</title>
     <form action="/hku_cookie_war_exploded/register" method="post">
-        <label>用户名: </label><input type="text" name="userName"/><br>
+        <label>用户名: </label><input type="text" name="userName" onkeyup=hkuAxios(this) /><br>
         <label>密&nbsp码&nbsp: </label><input type="password" name="userPwd"/><br/>
         <label>验证码: </label><input type="text" name="code"/><img id="exchangecode" src="VerifycodeServlet"><br>
         <a id="ecode" href="#">cannot see? change to a new one</a><br>
-        <span style="color:red">${errMsg}</span>
+        <span id= "error" style="color:red">${errMsg}</span>
         <input type="submit" value="register "/>
     </form>
 
@@ -38,5 +38,23 @@
         }
 
     </script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        function hkuAxios(object){
+            var userName = object.value ;
+            axios({
+                method: 'Get',
+                url: 'http://localhost:8080${pageContext.request.contextPath}/exUserNameServlet',
+                params: {
+                    userName: userName
+                }
+            }).then(function(res){
+                document.getElementById("error").innerText = res.data;
+            }).catch(function(err){
+                console.log(err);
+            })
+        }
+    </script>
+
 </head>
 </html>
